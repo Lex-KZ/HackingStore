@@ -1,6 +1,7 @@
 const TOKEN_KEY = 'session_token';
 
-export function signIn() {
+export function signIn(email, password) {
+    console.dir({ email, password })
     return Promise.resolve(setToken('666'));
 }
 

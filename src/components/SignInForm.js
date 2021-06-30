@@ -1,8 +1,18 @@
 import React from 'react';
 
-function SignInForm({ handleSubmit }) {
+function SignInForm({ onSignIn }) {
+    function handleSubmit(event) {
+        // console.dir(event.target)
+        event.preventDefault();
+        const form = event.target;
+        const elements = form.elements
+        const email = elements.email.value;
+        const password = elements.password.value;
+        console.dir(email, password);
+        onSignIn({ email, password })
+    }
     return (
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <fieldset>
                 <label>Email</label>
                 <input name="email" type="text"></input>

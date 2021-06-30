@@ -13,7 +13,6 @@ import { getProducts } from './api/products.js'
 import { signIn, getToken } from './api/auth';
 import './App.css';
 
-
 class App extends React.Component {
   state = { 
     products: null,
@@ -46,57 +45,56 @@ class App extends React.Component {
 
   
 // lexical 'this' 
-  handleSubmit = event => {
-    event.preventDefault();
+  handleSignin = ({ email, password }) => {
+    // event.preventDefault();
     // console.dir(event.target)
-    signIn().then(token => this.setState({ token }))
+    signIn(email, password).then(token => this.setState({ token }))
   }
   
   
   render() {
     const signedIn = !!this.state.token;
 
+    function requireAuth(render) {
+      return function(props) {
+        if (signedIn) {
+          return render(props)
+        } else {
+          return <Redirect to='/signin' />
+        }
+      }
+    }
+
     return (
       <div className="App">
       <Router>
         <Header/>
-        
         <main>
-        <Switch>
-          <Route path='/signin' render={() => (
-            signedIn ? (
-              <Redirect to='/' />
-            ) : (
-              <SignInForm handleSubmit={this.handleSubmit}/>
-            )
-          )} />
-          {
-            this.state.products && (
-              <Route exact path='/products/:id' render={({ match: { prams: { id } }}) => {
-              const product = this.state.products.find(p => p.id == id)
-              console.dir({ product })
-              return(<Product product={product} />);
-              }} />
-            )
-          }
+          <Switch>
+            <Route path='/signin' render={() => (
+              signedIn ? (
+                <Redirect to='/products' />
+              ) : (
+                <SignInForm onSignIn={this.handleSignin}/>
+              )
+            )} />
 
-          {
-            this.state.products ? (
-              <Route path='/products'>
-              {
-                this.state.products ? 
-                (
-                  <ProductList products={this.state.products} />
-                ) : (
-                  <div>Loading&hellip;</div>
-                )
-              }
-            </Route>
-            ) : (
-              <Redirect to='/signin' />
-            )
-          }
-         
+            {
+              this.state.products && (
+                <Route path='/products/:id' render={({ match: { params: { id } }}) => {
+                  const product = this.state.products.find(p => p.id == id)
+                  console.dir({ product })
+                  return(<Product product={product} />);
+                }} />
+              )
+            }
+
+            {
+              <Route path='/products' render={requireAuth(() => (
+                <ProductList products={this.state.products} />
+              ))} />
+            }
+          
           </Switch>
         </main>
         </Router>
