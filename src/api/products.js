@@ -8,11 +8,11 @@ const products = [
     { id: 5, name:faker.commerce.productName(), price: faker.commerce.price()},
 ]
 
-export function getProducts(){
+export function getProducts(token) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             if (Math.random() >= 0.0) {
-                resolve(products);
+                token ? resolve(products) : resolve ()
             } else {
                 reject();
             }

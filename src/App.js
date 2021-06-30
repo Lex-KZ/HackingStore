@@ -27,15 +27,25 @@ class App extends React.Component {
 
   
   componentDidMount() {
-    getProducts()
-    .then(products => {
-      console.dir(products);
-      return Promise.resolve(products);
-      // return products; // same same
-    })
-    .then(products =>{
-      this.setState({ products: products });
-    });
+    getProducts(this.state.token)
+    // .then(products => {
+    //   console.dir(products);
+    //   return Promise.resolve(products);
+    //   // return products; // same same
+    // })
+      .then(products =>{
+        this.setState({ products: products });
+      });
+  }
+
+  componentDidUpdate(prevProp, prevState) {
+    const { token } = this.state;
+    if (prevState.token !== this.state.token) {
+      getProducts(token)
+        .then(products => {
+          this.setState({ products: products });
+        });
+    }
   }
 
   // handleSubmit(event) {
