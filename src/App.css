@@ -42,3 +42,16 @@ form label {
 tbody th {
   font-weight: normal;
 }
+
+dt {
+  display: inline-block;
+  width: 6rem;
+  text-align: left;
+  font-weight: bold;
+}
+
+dd {
+  display: inline-block;
+  width: 10rem;
+  text-align: right;
+}

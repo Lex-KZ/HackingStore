@@ -5,18 +5,18 @@ function Product({ product }) {
     return (
         <div>
             <dl>
-                <dt>Id</dt>
+                <dt>Id:</dt>
                 <dd>{product.id}</dd>
             </dl>
             <dl>
-                <dt>Name</dt>
+                <dt>Name:</dt>
                 <dd>{product.name}</dd>
             </dl>
             <dl>
-                <dt>Price</dt>
+                <dt>Price:</dt>
                 <dd>{product.price}</dd>
             </dl>
-            <Link to='/products'>&larr;&nbsp;Back;</Link>
+            <Link to='/products'>&larr;&nbsp;Back</Link>
         </div>
 
    );
