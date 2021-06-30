@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,7 +13,74 @@ import { getProducts } from './api/products.js'
 import { signIn, getToken } from './api/auth';
 import './App.css';
 
-class App extends React.Component {
+function App() {
+  const [token, setToken ] = useState(getToken());
+  const [products, setProducts] = useState(null);
+
+  const signedIn = !!token;
+
+  function requireAuth(render) {
+    return function(props) {
+      if (signedIn) {
+        return render(props)
+      } else {
+        return <Redirect to='/signin' />
+      }
+    }
+  }
+
+  const handleSignin = ({ email, password }) => {
+    // event.preventDefault();
+    // console.dir(event.target)
+    signIn(email, password).then(token => setToken(token))
+  }
+
+  useEffect(() => {
+    getProducts(token)
+      .then(products => { setProducts(products) });
+    
+      return () => { console.log('componentWillUnmount')}
+  });
+
+  return(
+    <div className="App">
+    <Router>
+      <Header/>
+      <main>
+        <Switch>
+          <Route path='/signin' render={() => (
+            signedIn ? (
+              <Redirect to='/products' />
+            ) : (
+              <SignInForm onSignIn={handleSignin}/>
+            )
+          )} />
+
+          {
+            products && (
+              <Route path='/products/:id' render={({ match: { params: { id } }}) => {
+                const product = products.find(p => p.id == id)
+                console.dir({ product })
+                return(<Product product={product} />);
+              }} />
+            )
+          }
+
+          {
+            <Route path='/products' render={requireAuth(() => (
+              <ProductList products={products} />
+            ))} />
+          }
+        
+        </Switch>
+      </main>
+      </Router>
+    </div>
+  );
+}
+
+
+class Appx extends React.Component {
   state = { 
     products: null,
     token: getToken()
